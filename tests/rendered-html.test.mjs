@@ -26,11 +26,12 @@ test("server-renders the RelayBridge translation demo", async () => {
   const html = await response.text();
   assert.match(html, /<title>RelayBridge — Live support, translated instantly<\/title>/i);
   assert.match(html, /RelayBridge/);
-  assert.match(html, /AX-400 \/ E-17 Pressure Alert/);
+  assert.match(html, /AX-400 pressure alert/);
   assert.match(html, /Choose participant perspective/);
-  assert.match(html, /Translated/);
+  assert.match(html, /Live translation/);
   assert.match(html, />JA</);
-  assert.match(html, /Live transcript/);
+  assert.match(html, /Transcript/);
+  assert.doesNotMatch(html, /Search conversations|Workspaces|TRANSLATION STREAM/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
 
@@ -54,7 +55,7 @@ test("keeps the finished product free of starter artifacts", async () => {
   assert.match(page, /from "animejs"/);
   assert.match(page, /prefers-reduced-motion/);
   assert.match(layout, /\/og\.png/);
-  assert.match(css, /@media \(max-width: 900px\)/);
+  assert.match(css, /@media \(max-width: 760px\)/);
   assert.match(packageJson, /"animejs"/);
   assert.match(packageJson, /"lucide-react"/);
   assert.doesNotMatch(page, /_sites-preview|SkeletonPreview/);
