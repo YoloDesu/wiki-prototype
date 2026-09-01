@@ -23,6 +23,7 @@ import {
   X,
 } from "lucide-react";
 import { animate, stagger } from "animejs";
+import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type Locale = "en" | "ja";
@@ -232,6 +233,7 @@ export default function Home() {
     [currentStep, customMessages],
   );
   const progress = ((currentStep + 1) / messages.length) * 100;
+  const isRunning = isPlaying && currentStep < messages.length - 1;
 
   const showToast = useCallback((message: string) => {
     setToast(message);
@@ -247,21 +249,19 @@ export default function Home() {
       duration: 700,
       ease: "out(3)",
     });
-    return () => intro.cancel();
+    return () => {
+      intro.cancel();
+    };
   }, []);
 
   useEffect(() => {
-    if (!isPlaying) return;
-    if (currentStep >= messages.length - 1) {
-      setIsPlaying(false);
-      return;
-    }
+    if (!isRunning) return;
     const timer = window.setTimeout(
       () => setCurrentStep((step) => Math.min(step + 1, messages.length - 1)),
       currentStep === 3 ? 3600 : 4800,
     );
     return () => window.clearTimeout(timer);
-  }, [currentStep, isPlaying]);
+  }, [currentStep, isRunning]);
 
   useEffect(() => {
     if (firstRender.current) {
@@ -371,7 +371,7 @@ export default function Home() {
             <div className="stacked-avatars" aria-label="Three participants online">
               {participants.map((participant) => <Avatar key={participant.id} participant={participant} small />)}
             </div>
-            <span className="demo-label">Simulated demo</span>
+            <span className="online-copy"><i /> 3 online</span>
           </div>
         </header>
 
@@ -390,7 +390,10 @@ export default function Home() {
                   key={participant.id}
                   className={activeViewer === participant.id ? "viewer-active" : ""}
                   aria-pressed={activeViewer === participant.id}
-                  onClick={() => setActiveViewer(participant.id)}
+                  onClick={() => {
+                    setActiveViewer(participant.id);
+                    setFileLocale(localeFor(participant.id));
+                  }}
                 >
                   <span style={{ background: participant.color }}>{participant.initials}</span>
                   <b>{participant.id === "technician" ? "Technician" : participant.id === "engineer" ? "Engineer" : "Customer"}</b>
@@ -408,13 +411,13 @@ export default function Home() {
             <button
               className="play-button"
               onClick={() => {
-                if (currentStep === messages.length - 1 && !isPlaying) restartDemo();
+                if (currentStep === messages.length - 1) restartDemo();
                 else setIsPlaying((playing) => !playing);
               }}
-              aria-label={isPlaying ? "Pause demo" : "Play demo"}
+              aria-label={isRunning ? "Pause demo" : "Play demo"}
             >
-              {isPlaying ? <Pause size={14} fill="currentColor" /> : <Play size={14} fill="currentColor" />}
-              {isPlaying ? "Pause" : currentStep === messages.length - 1 ? "Replay" : "Play"}
+              {isRunning ? <Pause size={14} fill="currentColor" /> : <Play size={14} fill="currentColor" />}
+              {isRunning ? "Pause" : currentStep === messages.length - 1 ? "Replay" : "Play"}
             </button>
             <button disabled={currentStep === messages.length - 1} onClick={() => { setIsPlaying(false); setCurrentStep((step) => Math.min(messages.length - 1, step + 1)); }} aria-label="Next step"><ChevronRight size={17} /></button>
           </div>
@@ -424,7 +427,6 @@ export default function Home() {
             <div className="progress-track"><span style={{ width: `${progress}%` }} /></div>
           </div>
 
-          <span className="context-status"><Sparkles size={13} /> Context preserved automatically</span>
         </div>
 
         <div className="chat-scroll">
@@ -463,7 +465,7 @@ export default function Home() {
 
                       {message.kind === "image" && (
                         <button className="image-attachment" onClick={() => setImageOpen(true)} aria-label="Open translated equipment image">
-                          <img src="/media/ax400-control-panel.png" alt="AX-400 industrial cooling unit control panel" />
+                          <Image src="/media/ax400-control-panel.png" alt="AX-400 industrial cooling unit control panel" width={1600} height={900} />
                           <span className="scan-line" />
                           <span className="error-chip">E-17</span>
                           <span className="image-caption"><Sparkles size={12} /> {message.detail?.[viewerLocale]}</span>
@@ -489,8 +491,8 @@ export default function Home() {
                           <div className="file-icon"><FileText size={25} /><span>PDF</span></div>
                           <div className="file-copy">
                             <span className="file-eyebrow"><Check size={10} /> Translation ready</span>
-                            <strong>{message.content[viewerLocale]}</strong>
-                            <small>{message.detail?.[viewerLocale]}</small>
+                            <strong>{message.content[fileLocale]}</strong>
+                            <small>{message.detail?.[fileLocale]}</small>
                             <div className="file-actions">
                               <div className="file-toggle" role="group" aria-label="Choose document language">
                                 <button className={fileLocale === "en" ? "active" : ""} onClick={() => setFileLocale("en")}>EN</button>
@@ -547,7 +549,7 @@ export default function Home() {
           <div className="modal-card">
             <div className="modal-header"><div><span>VISUAL TRANSLATION</span><h2>AX-400 control panel</h2></div><button aria-label="Close image" onClick={() => setImageOpen(false)}><X size={19} /></button></div>
             <div className="modal-image">
-              <img src="/media/ax400-control-panel.png" alt="AX-400 industrial cooling unit control panel enlarged" />
+              <Image src="/media/ax400-control-panel.png" alt="AX-400 industrial cooling unit control panel enlarged" width={1600} height={900} />
               <span className="modal-marker marker-error"><i />E-17 active alert</span>
               <span className="modal-marker marker-pressure"><i />Inlet pressure · 1.4 bar</span>
               <span className="modal-marker marker-connector"><i />Inspect connector C4</span>

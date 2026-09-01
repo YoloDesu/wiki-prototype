@@ -6,9 +6,10 @@
     "node": ">=22.13.0"
   },
   "scripts": {
-    "dev": "vinext dev",
-    "build": "vinext build",
-    "start": "vinext start",
+    "start": "next dev",
+    "dev": "next dev",
+    "build": "next build",
+    "preview": "next start",
     "test": "npm run build && node --test tests/rendered-html.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "generate:pdfs": "python scripts/generate-demo-pdfs.py",

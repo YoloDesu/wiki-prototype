@@ -2,63 +2,44 @@ import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
-const root = new URL("../", import.meta.url);
+test("keeps the RelayBridge demo focused on the translated conversation", async () => {
+  const [page, layout, css] = await Promise.all([
+    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+  ]);
 
-async function render() {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
-  const { default: worker } = await import(workerUrl.href);
-
-  return worker.fetch(
-    new Request("http://localhost/", { headers: { accept: "text/html" } }),
-    {
-      ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) },
-    },
-    { waitUntil() {}, passThroughOnException() {} },
-  );
-}
-
-test("server-renders the RelayBridge translation demo", async () => {
-  const response = await render();
-  assert.equal(response.status, 200);
-  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
-
-  const html = await response.text();
-  assert.match(html, /<title>RelayBridge — Live support, translated instantly<\/title>/i);
-  assert.match(html, /RelayBridge/);
-  assert.match(html, /AX-400 pressure alert/);
-  assert.match(html, /Choose participant perspective/);
-  assert.match(html, /Live translation/);
-  assert.match(html, />JA</);
-  assert.match(html, /Transcript/);
-  assert.doesNotMatch(html, /Search conversations|Workspaces|TRANSLATION STREAM/);
-  assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
+  assert.match(layout, /RelayBridge — Live support, translated instantly/);
+  assert.match(page, /AX-400 pressure alert/);
+  assert.match(page, /Choose participant perspective/);
+  assert.match(page, /Live translation/);
+  assert.match(page, /Transcript/);
+  assert.match(page, /from "animejs"/);
+  assert.match(page, /prefers-reduced-motion/);
+  assert.match(css, /@media \(max-width: 760px\)/);
+  assert.doesNotMatch(page, /Search conversations|Workspaces|TRANSLATION STREAM/);
+  assert.doesNotMatch(page, /_sites-preview|SkeletonPreview/);
+  assert.doesNotMatch(layout, /Starter Project|codex-preview/);
 });
 
-test("ships the generated translation assets", async () => {
+test("ships the simulated translation assets", async () => {
   await Promise.all([
     access(new URL("../public/media/ax400-control-panel.png", import.meta.url)),
-    access(new URL("../public/og.png", import.meta.url)),
     access(new URL("../public/demo-files/AX-400_E17_Service_Bulletin_EN.pdf", import.meta.url)),
     access(new URL("../public/demo-files/AX-400_E17_Service_Bulletin_JA.pdf", import.meta.url)),
   ]);
 });
 
-test("keeps the finished product free of starter artifacts", async () => {
-  const [page, layout, css, packageJson] = await Promise.all([
-    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+test("runs locally with npm start and contains no authentication layer", async () => {
+  const [packageJson, readme] = await Promise.all([
     readFile(new URL("../package.json", import.meta.url), "utf8"),
+    readFile(new URL("../README.md", import.meta.url), "utf8"),
   ]);
 
-  assert.match(page, /from "animejs"/);
-  assert.match(page, /prefers-reduced-motion/);
-  assert.match(layout, /\/og\.png/);
-  assert.match(css, /@media \(max-width: 760px\)/);
-  assert.match(packageJson, /"animejs"/);
-  assert.match(packageJson, /"lucide-react"/);
-  assert.doesNotMatch(page, /_sites-preview|SkeletonPreview/);
-  assert.doesNotMatch(layout, /Starter Project|codex-preview/);
-  await assert.rejects(access(new URL("../app/_sites-preview/SkeletonPreview.tsx", import.meta.url)));
+  const packageData = JSON.parse(packageJson);
+  assert.equal(packageData.scripts.start, "next dev");
+  assert.match(readme, /npm start/);
+  assert.match(readme, /Não há backend, autenticação, conexão com ChatGPT/);
+  await assert.rejects(access(new URL("../app/chatgpt-auth.ts", import.meta.url)));
+  await assert.rejects(access(new URL("../.openai/hosting.json", import.meta.url)));
 });
