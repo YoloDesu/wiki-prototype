@@ -9,6 +9,7 @@
     "start": "next dev",
     "dev": "next dev",
     "build": "next build",
+    "build:sites": "vite build",
     "preview": "next start",
     "test": "npm run build && node --test tests/rendered-html.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",

@@ -21,7 +21,7 @@ Evoluir o cenário existente de suporte do AX-400 com uma chamada ao vivo inspir
 - [x] Testes automatizados completos (5/5 passando).
 - [x] Build de produção.
 - [x] Lint sem erros.
-- [ ] Publicação e revisão final.
+- [ ] Publicação e revisão final (projeto privado criado; build de hospedagem validado).
 
 ## Decisões
 
@@ -30,6 +30,7 @@ Evoluir o cenário existente de suporte do AX-400 com uma chamada ao vivo inspir
 - A reprodução mantém o instante atual ao trocar de idioma, evitando reiniciar a chamada.
 - Enquanto os MP3 finais não estiverem presentes, a interface funciona em modo de demonstração silenciosa, com timeline e roteiro sincronizados.
 - O roteiro pode ser visualizado em inglês, japonês ou nos dois idiomas, e baixado como `.txt`.
+- A imagem de compartilhamento foi atualizada para representar a chamada com três participantes e áudio bilíngue.
 
 ## Arquivos esperados para áudio
 
@@ -40,11 +41,12 @@ Os dois arquivos devem ter a mesma duração e falas alinhadas no tempo. O contr
 
 ## Próximos passos
 
-1. Registrar o commit da implementação.
-2. Publicar a versão validada.
+1. Registrar os metadados e a configuração de publicação.
+2. Empacotar e publicar a versão validada.
 3. Fazer a revisão final do estado do repositório e deste handoff.
 
 ## Registro da sessão
 
 - `dfc244f` — handoff inicial e escopo da chamada.
-- Em andamento — chamada bilíngue, script sincronizado e contrato dos MP3.
+- `50575fe` — chamada bilíngue, script sincronizado e contrato dos MP3.
+- Em andamento — metadados de compartilhamento e publicação privada.

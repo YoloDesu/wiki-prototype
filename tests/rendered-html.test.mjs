@@ -10,6 +10,8 @@ test("keeps the RelayBridge demo focused on the translated conversation", async 
   ]);
 
   assert.match(layout, /RelayBridge — Live support, translated instantly/);
+  assert.match(layout, /relaybridge-translated-support\.bequel\.chatgpt\.site/);
+  assert.match(layout, /og-call\.png/);
   assert.match(page, /AX-400 pressure alert/);
   assert.match(page, /Choose participant perspective/);
   assert.match(page, /Live translation/);
@@ -25,6 +27,7 @@ test("keeps the RelayBridge demo focused on the translated conversation", async 
 test("ships the simulated translation assets", async () => {
   await Promise.all([
     access(new URL("../public/media/ax400-control-panel.png", import.meta.url)),
+    access(new URL("../public/og-call.png", import.meta.url)),
     access(new URL("../public/demo-files/AX-400_E17_Service_Bulletin_EN.pdf", import.meta.url)),
     access(new URL("../public/demo-files/AX-400_E17_Service_Bulletin_JA.pdf", import.meta.url)),
   ]);
@@ -65,15 +68,16 @@ test("keeps autoplay scrolling inside the conversation panel", async () => {
 });
 
 test("runs locally with npm start and contains no authentication layer", async () => {
-  const [packageJson, readme] = await Promise.all([
+  const [packageJson, readme, hosting] = await Promise.all([
     readFile(new URL("../package.json", import.meta.url), "utf8"),
     readFile(new URL("../README.md", import.meta.url), "utf8"),
+    readFile(new URL("../.openai/hosting.json", import.meta.url), "utf8"),
   ]);
 
   const packageData = JSON.parse(packageJson);
   assert.equal(packageData.scripts.start, "next dev");
   assert.match(readme, /npm start/);
   assert.match(readme, /Não há backend, autenticação, conexão com ChatGPT/);
+  assert.equal(typeof JSON.parse(hosting).project_id, "string");
   await assert.rejects(access(new URL("../app/chatgpt-auth.ts", import.meta.url)));
-  await assert.rejects(access(new URL("../.openai/hosting.json", import.meta.url)));
 });
