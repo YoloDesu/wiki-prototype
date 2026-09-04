@@ -21,7 +21,7 @@ Evoluir o cenário existente de suporte do AX-400 com uma chamada ao vivo inspir
 - [x] Testes automatizados completos (5/5 passando).
 - [x] Build de produção.
 - [x] Lint sem erros.
-- [ ] Publicação e revisão final (projeto privado criado; build de hospedagem validado).
+- [x] Publicação privada e revisão final.
 
 ## Decisões
 
@@ -41,12 +41,19 @@ Os dois arquivos devem ter a mesma duração e falas alinhadas no tempo. O contr
 
 ## Próximos passos
 
-1. Registrar os metadados e a configuração de publicação.
-2. Empacotar e publicar a versão validada.
-3. Fazer a revisão final do estado do repositório e deste handoff.
+1. Adicionar os dois MP3 finais em `public/audio/` quando a locução estiver pronta.
+2. Manter os dois arquivos com 98 segundos e alinhados aos timestamps de `app/call-data.ts`.
+3. Executar `npm test` antes de uma próxima publicação.
 
 ## Registro da sessão
 
 - `dfc244f` — handoff inicial e escopo da chamada.
 - `50575fe` — chamada bilíngue, script sincronizado e contrato dos MP3.
-- Em andamento — metadados de compartilhamento e publicação privada.
+- `e2c1d82` — metadados, imagem de compartilhamento e configuração da publicação.
+
+## Entrega
+
+- Site privado: https://relaybridge-translated-support.bequel.chatgpt.site
+- Versão publicada: 1
+- Validação final: build Next.js, build de hospedagem, lint e 5 testes passando.
+- Estado dos áudios: estrutura pronta; a reprodução usa a timeline silenciosa até os MP3 finais serem adicionados.
