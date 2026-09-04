@@ -30,6 +30,17 @@ test("ships the simulated translation assets", async () => {
   ]);
 });
 
+test("keeps autoplay scrolling inside the conversation panel", async () => {
+  const [page, css] = await Promise.all([
+    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(page, /chat\.scrollTo\(\{ top: chat\.scrollHeight, behavior \}\)/);
+  assert.doesNotMatch(page, /scrollIntoView/);
+  assert.match(css, /overscroll-behavior: contain/);
+});
+
 test("runs locally with npm start and contains no authentication layer", async () => {
   const [packageJson, readme] = await Promise.all([
     readFile(new URL("../package.json", import.meta.url), "utf8"),

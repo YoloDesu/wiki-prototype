@@ -47,9 +47,9 @@ a:focus-visible {
 .app-shell {
   position: relative;
   display: grid;
-  width: 100vw;
+  width: 100%;
   height: 100dvh;
-  min-height: 640px;
+  min-height: 0;
   padding: 18px;
   overflow: hidden;
   place-items: center;
@@ -94,6 +94,7 @@ a:focus-visible {
   display: flex;
   width: min(1320px, 100%);
   height: 100%;
+  max-height: 100%;
   min-height: 0;
   overflow: hidden;
   flex-direction: column;
@@ -463,6 +464,7 @@ a:focus-visible {
   flex: 1;
   overflow-x: hidden;
   overflow-y: auto;
+  overscroll-behavior: contain;
   scrollbar-color: rgba(92, 99, 124, 0.25) transparent;
   scrollbar-width: thin;
 }
@@ -1248,7 +1250,7 @@ a:focus-visible {
 }
 
 @media (max-width: 760px) {
-  .app-shell { min-height: 540px; padding: 0; }
+  .app-shell { padding: 0; }
   .workspace { border: 0; border-radius: 0; }
   .topbar { min-height: 62px; padding: 0 14px; }
   .brand-name,
@@ -1284,6 +1286,31 @@ a:focus-visible {
   .composer-input small { display: none; }
   .modal-card { width: 96vw; border-radius: 20px; }
   .modal-marker { padding: 6px 8px; font-size: 8px; }
+}
+
+@media (max-height: 700px) {
+  .app-shell { padding: 8px; }
+  .topbar { min-height: 56px; }
+  .case-header { min-height: auto; padding-block: 12px; }
+  .case-copy p { display: none; }
+  .case-copy h1 { font-size: 22px; }
+  .viewer-label { display: none; }
+  .viewer-switcher button { min-height: 35px; }
+  .demo-bar { min-height: 44px; }
+  .composer-wrap { padding-block: 7px 10px; }
+  .composer { min-height: 48px; }
+}
+
+@media (max-width: 760px) and (max-height: 620px) {
+  .app-shell { padding: 0; }
+  .topbar { min-height: 52px; }
+  .case-header { gap: 8px; padding: 9px 12px; }
+  .live-kicker { display: none; }
+  .case-copy h1 { font-size: 19px; }
+  .viewer-switcher button { min-height: 34px; }
+  .demo-bar { min-height: 42px; }
+  .chat-canvas { padding-top: 14px; }
+  .composer { min-height: 46px; }
 }
 
 @media (max-width: 520px) {

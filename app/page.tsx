@@ -223,7 +223,7 @@ export default function Home() {
   const [quickRepliesOpen, setQuickRepliesOpen] = useState(false);
   const [customMessages, setCustomMessages] = useState<DemoMessage[]>([]);
   const [toast, setToast] = useState<string | null>(null);
-  const chatEndRef = useRef<HTMLDivElement>(null);
+  const chatScrollRef = useRef<HTMLDivElement>(null);
   const firstRender = useRef(true);
 
   const viewerLocale = localeFor(activeViewer);
@@ -238,6 +238,13 @@ export default function Home() {
   const showToast = useCallback((message: string) => {
     setToast(message);
     window.setTimeout(() => setToast(null), 2400);
+  }, []);
+
+  const scrollChatToEnd = useCallback((behavior: ScrollBehavior = "smooth") => {
+    const chat = chatScrollRef.current;
+    if (!chat) return;
+
+    chat.scrollTo({ top: chat.scrollHeight, behavior });
   }, []);
 
   useEffect(() => {
@@ -284,14 +291,15 @@ export default function Home() {
         duration: 850,
         ease: "inOut(2)",
       });
-      window.setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
+      const scrollTimer = window.setTimeout(() => scrollChatToEnd(), 100);
       return () => {
+        window.clearTimeout(scrollTimer);
         messageAnimation.cancel();
         translationAnimation.cancel();
       };
     }
-    chatEndRef.current?.scrollIntoView();
-  }, [currentStep]);
+    scrollChatToEnd("auto");
+  }, [currentStep, scrollChatToEnd]);
 
   useEffect(() => {
     if (!audioPlaying) return;
@@ -344,7 +352,7 @@ export default function Home() {
     ]);
     setQuickRepliesOpen(false);
     setIsPlaying(false);
-    window.setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: "smooth" }), 80);
+    window.setTimeout(() => scrollChatToEnd(), 80);
     showToast("Translated and delivered");
   }
 
@@ -429,7 +437,7 @@ export default function Home() {
 
         </div>
 
-        <div className="chat-scroll">
+        <div className="chat-scroll" ref={chatScrollRef}>
           <div className="chat-canvas">
             <div className="day-divider"><span>Today</span></div>
 
@@ -516,7 +524,7 @@ export default function Home() {
                 </article>
               );
             })}
-            <div ref={chatEndRef} />
+            <div />
           </div>
         </div>
 
