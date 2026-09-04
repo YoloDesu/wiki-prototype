@@ -30,6 +30,29 @@ test("ships the simulated translation assets", async () => {
   ]);
 });
 
+test("includes a time-aligned bilingual support call", async () => {
+  const [page, call, data, audioReadme] = await Promise.all([
+    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/bilingual-call.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/call-data.ts", import.meta.url), "utf8"),
+    readFile(new URL("../public/audio/README.md", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(page, /Join translated call/);
+  assert.match(call, /Listening in/);
+  assert.match(call, /English/);
+  assert.match(call, /日本語/);
+  assert.match(call, /EN \+ JA/);
+  assert.match(call, /target\.currentTime = elapsedRef\.current/);
+  assert.match(call, /buildBilingualCallScript/);
+  assert.match(data, /ax400-support-call\.en\.mp3/);
+  assert.match(data, /ax400-support-call\.ja\.mp3/);
+  assert.match(data, /export const callDuration = 98/);
+  assert.match(data, /EN: \$\{segment\.script\.en\}/);
+  assert.match(data, /JA: \$\{segment\.script\.ja\}/);
+  assert.match(audioReadme, /same call instant/);
+});
+
 test("keeps autoplay scrolling inside the conversation panel", async () => {
   const [page, css] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),

@@ -17,6 +17,7 @@ import {
   Paperclip,
   Pause,
   Play,
+  PhoneCall,
   RotateCcw,
   Send,
   Sparkles,
@@ -25,6 +26,7 @@ import {
 import { animate, stagger } from "animejs";
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import BilingualCall from "./bilingual-call";
 
 type Locale = "en" | "ja";
 type ParticipantRole = "technician" | "engineer" | "customer";
@@ -219,6 +221,7 @@ export default function Home() {
   const [expandedOriginals, setExpandedOriginals] = useState<Set<string>>(new Set());
   const [audioPlaying, setAudioPlaying] = useState(false);
   const [imageOpen, setImageOpen] = useState(false);
+  const [callOpen, setCallOpen] = useState(false);
   const [fileLocale, setFileLocale] = useState<Locale>("en");
   const [quickRepliesOpen, setQuickRepliesOpen] = useState(false);
   const [customMessages, setCustomMessages] = useState<DemoMessage[]>([]);
@@ -311,6 +314,7 @@ export default function Home() {
     const handleKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setImageOpen(false);
+        setCallOpen(false);
         setQuickRepliesOpen(false);
       }
       if (event.key === " " && event.target === document.body) {
@@ -390,24 +394,38 @@ export default function Home() {
             <p>One conversation. Everyone reads it in their own language.</p>
           </div>
 
-          <div className="viewer-area">
-            <span className="viewer-label">Viewing as</span>
-            <div className="viewer-switcher" role="group" aria-label="Choose participant perspective">
-              {participants.map((participant) => (
-                <button
-                  key={participant.id}
-                  className={activeViewer === participant.id ? "viewer-active" : ""}
-                  aria-pressed={activeViewer === participant.id}
-                  onClick={() => {
-                    setActiveViewer(participant.id);
-                    setFileLocale(localeFor(participant.id));
-                  }}
-                >
-                  <span style={{ background: participant.color }}>{participant.initials}</span>
-                  <b>{participant.id === "technician" ? "Technician" : participant.id === "engineer" ? "Engineer" : "Customer"}</b>
-                  <small>{participant.locale.toUpperCase()}</small>
-                </button>
-              ))}
+          <div className="case-actions">
+            <button
+              className="call-launch"
+              onClick={() => {
+                setIsPlaying(false);
+                setCallOpen(true);
+              }}
+            >
+              <span><PhoneCall size={17} /></span>
+              <span><strong>Join translated call</strong><small>English · 日本語</small></span>
+              <i>LIVE</i>
+            </button>
+
+            <div className="viewer-area">
+              <span className="viewer-label">Viewing as</span>
+              <div className="viewer-switcher" role="group" aria-label="Choose participant perspective">
+                {participants.map((participant) => (
+                  <button
+                    key={participant.id}
+                    className={activeViewer === participant.id ? "viewer-active" : ""}
+                    aria-pressed={activeViewer === participant.id}
+                    onClick={() => {
+                      setActiveViewer(participant.id);
+                      setFileLocale(localeFor(participant.id));
+                    }}
+                  >
+                    <span style={{ background: participant.color }}>{participant.initials}</span>
+                    <b>{participant.id === "technician" ? "Technician" : participant.id === "engineer" ? "Engineer" : "Customer"}</b>
+                    <small>{participant.locale.toUpperCase()}</small>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -565,6 +583,17 @@ export default function Home() {
             <div className="modal-footer"><span><Sparkles size={15} /> 3 visual references translated</span><button onClick={() => setImageOpen(false)}>Done</button></div>
           </div>
         </div>
+      )}
+
+      {callOpen && (
+        <BilingualCall
+          activeViewer={activeViewer}
+          onChangeViewer={(participant) => {
+            setActiveViewer(participant);
+            setFileLocale(localeFor(participant));
+          }}
+          onClose={() => setCallOpen(false)}
+        />
       )}
 
       {toast && <div className="toast" role="status"><Check size={15} /> {toast}</div>}

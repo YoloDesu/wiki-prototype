@@ -15,10 +15,12 @@ Evoluir o cenário existente de suporte do AX-400 com uma chamada ao vivo inspir
 
 - [x] Repositório e experiência existente mapeados.
 - [x] Escopo técnico e visual definido.
-- [ ] Manifesto bilíngue da chamada e contrato dos arquivos de áudio.
-- [ ] Interface de chamada, controles e troca de perspectiva.
-- [ ] Roteiro sincronizado em inglês e japonês.
-- [ ] Testes e build de produção.
+- [x] Manifesto bilíngue da chamada e contrato dos arquivos de áudio.
+- [x] Interface de chamada, controles e troca de perspectiva.
+- [x] Roteiro sincronizado em inglês e japonês.
+- [x] Testes automatizados completos (5/5 passando).
+- [x] Build de produção.
+- [x] Lint sem erros.
 - [ ] Publicação e revisão final.
 
 ## Decisões
@@ -27,6 +29,7 @@ Evoluir o cenário existente de suporte do AX-400 com uma chamada ao vivo inspir
 - O idioma ouvido acompanha automaticamente a perspectiva ativa: Emma e Daniel ouvem inglês; Kenji ouve japonês.
 - A reprodução mantém o instante atual ao trocar de idioma, evitando reiniciar a chamada.
 - Enquanto os MP3 finais não estiverem presentes, a interface funciona em modo de demonstração silenciosa, com timeline e roteiro sincronizados.
+- O roteiro pode ser visualizado em inglês, japonês ou nos dois idiomas, e baixado como `.txt`.
 
 ## Arquivos esperados para áudio
 
@@ -37,7 +40,11 @@ Os dois arquivos devem ter a mesma duração e falas alinhadas no tempo. O contr
 
 ## Próximos passos
 
-1. Criar o modelo de dados da chamada e o adaptador de áudio bilíngue.
-2. Implementar a interface e as interações.
-3. Cobrir o novo fluxo com testes e validar o build.
-4. Atualizar este handoff com o resultado e os commits.
+1. Registrar o commit da implementação.
+2. Publicar a versão validada.
+3. Fazer a revisão final do estado do repositório e deste handoff.
+
+## Registro da sessão
+
+- `dfc244f` — handoff inicial e escopo da chamada.
+- Em andamento — chamada bilíngue, script sincronizado e contrato dos MP3.

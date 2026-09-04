@@ -22,6 +22,7 @@ Comandos úteis:
 ## Conteúdo simulado
 
 - O roteiro, as traduções e as respostas rápidas ficam em `app/page.tsx`.
-- O player de voz é visual; um arquivo real pode ser conectado posteriormente pelo modelo de anexo já previsto.
+- A chamada bilíngue tem roteiro sincronizado em inglês e japonês, troca de perspectiva e download do script completo.
+- Os áudios finais da chamada podem ser conectados em `public/audio/`; a interface mantém o mesmo timestamp ao alternar entre inglês e japonês e usa uma timeline simulada quando os MP3 ainda não existem.
 - Os PDFs finais são servidos por `public/demo-files/` e suas cópias de entrega ficam em `output/pdf/`.
 - Não há backend, autenticação, conexão com ChatGPT, upload, persistência ou chamadas a serviços de IA.
